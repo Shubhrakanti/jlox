@@ -30,8 +30,13 @@ java { toolchain { languageVersion = JavaLanguageVersion.of(21) } }
 
 application {
     // Define the main class for the application.
-    mainClass = "org.example.App"
+    mainClass = "org.example.Lox"
 }
+
+tasks.named<JavaExec>("run") {
+    standardInput = System.`in`
+}
+
 
 tasks.named<Test>("test") {
     // Use JUnit Platform for unit tests.
