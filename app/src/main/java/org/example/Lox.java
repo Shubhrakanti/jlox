@@ -11,14 +11,26 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 public class Lox {
+    static boolean hadError = false;
+
+    private static void report(int line, String where, String message) {
+        System.err.println("[line" + line + "] Error" + where + ": " + message);
+    }
+
+    static void error(int line, String message) {
+        report(line, "", message);
+    }
 
     private static void run(String source) {
         Scanner scanner = new Scanner(source);
-        List<Tokens> tokens = Scanner.reaadTokens();
+        List<Tokens> tokens = Scanner.readTokens();
 
         for (Token token : tokens) {
             System.out.println(token);
         }
+
+        if (hadError)
+            System.exit(65);
     }
 
     private static void runFile(String path) throws IOException {
@@ -36,6 +48,7 @@ public class Lox {
             if (line == null)
                 break;
             run(line);
+            hadError = false;
         }
 
     }
