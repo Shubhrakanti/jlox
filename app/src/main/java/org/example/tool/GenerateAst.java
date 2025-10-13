@@ -25,6 +25,8 @@ public class GenerateAst {
 
         writer.println("package lox;");
         writer.println();
+        writer.println("import java.util.List;");
+        writer.println();
         writer.println("abstract class " + baseName + " {");
 
         // The AST classes.
