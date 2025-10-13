@@ -1,4 +1,4 @@
-package org.example;
+package lox;
 
 class Token {
     final TokenType type;
