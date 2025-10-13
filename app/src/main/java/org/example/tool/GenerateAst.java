@@ -23,9 +23,7 @@ public class GenerateAst {
         String path = outputDir + "/" + baseName + ".java";
         PrintWriter writer = new PrintWriter(path, "UTF-8");
 
-        writer.println("package com.craftinginterpreters.lox;");
-        writer.println();
-        writer.println("import java.util.List;");
+        writer.println("package lox;");
         writer.println();
         writer.println("abstract class " + baseName + " {");
 
@@ -40,13 +38,16 @@ public class GenerateAst {
         writer.close();
     }
 
-    private static void defineType(PrintWriter writer, String baseName, String className, String fieldList) {
-
+    private static void defineType(
+            PrintWriter writer, String baseName,
+            String className, String fieldList) {
         writer.println("  static class " + className + " extends " +
                 baseName + " {");
 
         // Constructor.
         writer.println("    " + className + "(" + fieldList + ") {");
+
+        // Store parameters in fields.
         String[] fields = fieldList.split(", ");
         for (String field : fields) {
             String name = field.split(" ")[1];

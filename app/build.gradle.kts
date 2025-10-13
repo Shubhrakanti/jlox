@@ -30,11 +30,20 @@ java { toolchain { languageVersion = JavaLanguageVersion.of(21) } }
 
 application {
     // Define the main class for the application.
-    mainClass = "org.example.Lox"
+     mainClass = "lox.Lox"
 }
 
 tasks.named<JavaExec>("run") {
     standardInput = System.`in`
+}
+
+tasks.register<JavaExec>("generateAst") {
+    group = "code generation"
+    description = "Generate AST classes for the Lox interpreter"
+    classpath = sourceSets.main.get().runtimeClasspath
+    mainClass.set("org.example.tool.GenerateAst")
+    // Output directory
+    args("src/main/java/lox")
 }
 
 
