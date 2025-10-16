@@ -11,6 +11,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 
+import static lox.TokenType.*;
+
 public class Lox {
     static boolean hadError = false;
 
@@ -22,16 +24,33 @@ public class Lox {
         report(line, "", message);
     }
 
+    static void error(Token token, String message) {
+        if (token.type == EOF) {
+            report(token.line, " at end", message);
+        } else {
+            report(token.line, " at '" + token.lexeme + "'", message);
+        }
+    }
+
     private static void run(String source) {
         Scanner scanner = new Scanner(source);
         List<Token> tokens = scanner.scanTokens();
 
-        for (Token token : tokens) {
-            System.out.println(token);
-        }
+        Parser parser = new Parser(tokens);
+        Expr expression = parser.parse();
 
+        // Stop if there was a syntax error.
         if (hadError)
-            System.exit(65);
+            return;
+
+        System.out.println(new AstPrinter().print(expression));
+
+        // for (Token token : tokens) {
+        // System.out.println(token);
+        // }
+
+        // if (hadError)
+        // System.exit(65);
     }
 
     private static void runFile(String path) throws IOException {
