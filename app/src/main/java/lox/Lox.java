@@ -14,7 +14,9 @@ import java.util.List;
 import static lox.TokenType.*;
 
 public class Lox {
+    private static final Interpreter interpreter = new Interpreter();
     static boolean hadError = false;
+    static boolean hadRuntimeError = false;
 
     private static void report(int line, String where, String message) {
         System.err.println("[line" + line + "] Error" + where + ": " + message);
@@ -43,14 +45,12 @@ public class Lox {
         if (hadError)
             return;
 
-        System.out.println(new AstPrinter().print(expression));
+        interpreter.interpret(expression);
 
-        // for (Token token : tokens) {
-        // System.out.println(token);
-        // }
-
-        // if (hadError)
-        // System.exit(65);
+        if (hadError)
+            System.exit(65);
+        if (hadRuntimeError)
+            System.exit(70);
     }
 
     private static void runFile(String path) throws IOException {
@@ -83,5 +83,11 @@ public class Lox {
             runPrompt();
         }
 
+    }
+
+    public static void runtimeError(RuntimeError error) {
+        System.err.println(error.getMessage() +
+                "\n[" + error.token.line + "]");
+        hadRuntimeError = true;
     }
 }
