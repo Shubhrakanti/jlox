@@ -2,8 +2,10 @@ package lox;
 
 import java.util.List;
 
+import lox.Expr.Variable;
 import lox.Stmt.Expression;
 import lox.Stmt.Print;
+import lox.Stmt.Var;
 
 public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
@@ -32,6 +34,18 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         }
 
         return object.toString();
+    }
+
+    @Override
+    public Void visitVarStmt(Var stmt) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'visitVarStmt'");
+    }
+
+    @Override
+    public Object visitVariableExpr(Variable expr) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'visitVariableExpr'");
     }
 
     @Override
