@@ -5,6 +5,7 @@ import java.util.List;
 
 import lox.Expr.Variable;
 import lox.Stmt.Expression;
+import lox.Stmt.If;
 import lox.Stmt.Print;
 import lox.Stmt.Var;
 
@@ -36,6 +37,16 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         }
 
         return object.toString();
+    }
+
+    @Override
+    public Void visitIfStmt(Stmt.If stmt) {
+        if (isTruthy(evaluate(stmt.condition))) {
+            execute(stmt.thenBranch);
+        } else if (stmt.elseBranch != null) {
+            execute(stmt.elseBranch);
+        }
+        return null;
     }
 
     @Override
