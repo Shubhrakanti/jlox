@@ -2,7 +2,10 @@ package lox;
 
 import java.beans.Expression;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
+import javax.swing.BorderFactory;
 
 import static lox.TokenType.*;
 
@@ -58,6 +61,10 @@ class Parser {
             return whileStatement();
         }
 
+        if (match(FOR)) {
+            return forStatement();
+        }
+
         if (match(PRINT))
             return printStatement();
 
@@ -65,6 +72,49 @@ class Parser {
             return new Stmt.Block(block());
 
         return expressionStatement();
+    }
+
+    private Stmt forStatement() {
+        consume(LEFT_PAREN, "Expect '(' after 'for'.");
+
+        Stmt initializer;
+        if (match(SEMICOLON)) {
+            initializer = null;
+        } else if (match(VAR)) {
+            initializer = varDeclaration();
+        } else {
+            initializer = expressionStatement();
+        }
+
+        Expr condition = null;
+        if (!check(SEMICOLON)) {
+            condition = expression();
+        }
+        consume(SEMICOLON, "Expect ';' after loop condition");
+
+        Expr increment = null;
+        if (!check(RIGHT_PAREN)) {
+            increment = expression();
+        }
+
+        consume(RIGHT_PAREN, "Expect a ')' after dor clauses.");
+
+        Stmt body = statement();
+
+        if (increment != null) {
+            body = new Stmt.Block(
+                    Arrays.asList(body, new Stmt.Expression(increment)));
+        }
+
+        if (condition == null)
+            condition = new Expr.Literal(true);
+        body = new Stmt.While(condition, body);
+
+        if (initializer != null) {
+            body = new Stmt.Block(Arrays.asList(initializer, body));
+        }
+
+        return body;
     }
 
     private Stmt whileStatement() {
