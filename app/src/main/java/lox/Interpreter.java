@@ -6,16 +6,16 @@ import java.util.List;
 import lox.Expr.Call;
 import lox.Expr.Variable;
 import lox.Stmt.Expression;
-import lox.Stmt.If;
+import lox.Stmt.Function;
 import lox.Stmt.Print;
 import lox.Stmt.Var;
 
 public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
-    private Environment gloabls = new Environment();
-    private Environment environment = gloabls;
+    final Environment globals = new Environment();
+    private Environment environment = globals;
 
     Interpreter() {
-        gloabls.define("clock", new LoxCallable() {
+        globals.define("clock", new LoxCallable() {
             @Override
             public int arity() {
                 return 0;
@@ -269,5 +269,11 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         }
 
         return function.call(this, arguments);
+    }
+
+    @Override
+    public Void visitFunctionStmt(Function stmt) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'visitFunctionStmt'");
     }
 }
