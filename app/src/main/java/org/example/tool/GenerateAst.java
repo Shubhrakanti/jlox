@@ -29,7 +29,8 @@ public class GenerateAst {
                         " Stmt elseBranch",
                 "Print      : Expr expression",
                 "Var        : Token name, Expr initializer",
-                "While      : Expr condition, Stmt body"));
+                "While      : Expr condition, Stmt body",
+                "Return     : Token keyword, Expr value"));
     }
 
     private static void defineAst(String outputDir, String baseName, List<String> types) throws IOException {
