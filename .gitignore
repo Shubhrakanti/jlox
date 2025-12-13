@@ -7,4 +7,4 @@ build
 
 scratch/*
 
-git rm **/*.class
+*.class
