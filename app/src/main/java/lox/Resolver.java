@@ -6,6 +6,8 @@ import java.util.Map;
 import java.util.List;
 import java.util.Stack;
 
+import javax.swing.text.html.FormSubmitEvent.MethodType;
+
 import lox.Expr.Assign;
 import lox.Expr.Binary;
 import lox.Expr.Call;
@@ -153,6 +155,10 @@ class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
     }
 
     if (stmt.value != null) {
+      if (currentFunction == FunctionType.INITIALIZER) {
+        Lox.error(stmt.keyword,
+            "Can't return a value from an initializer.");
+      }
       resolve(stmt.value);
     }
     return null;
@@ -230,7 +236,8 @@ class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
 
   private enum FunctionType {
     NONE,
-    FUNCTION, METHOD
+    FUNCTION, METHOD,
+    INITIALIZER
   }
 
   private enum ClassType {
@@ -253,6 +260,9 @@ class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
 
     for (Stmt.Function method: stmt.methods) {
       FunctionType declaration = FunctionType.METHOD;
+      if (method.name.lexeme.equals("init")){
+        declaration = FunctionType.INITIALIZER;
+      }
       resolveFunction(method, declaration);
     }
     
