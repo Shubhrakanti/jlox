@@ -8,6 +8,7 @@ import java.util.Map;
 import lox.Expr.Call;
 import lox.Expr.Get;
 import lox.Expr.Set;
+import lox.Expr.This;
 import lox.Expr.Variable;
 import lox.Stmt.Class;
 import lox.Stmt.Expression;
@@ -350,4 +351,9 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     ((LoxInstance)object).set(expr.name, value);
     return value;
   }
+
+	@Override
+	public Object visitThisExpr(This expr) {
+	    return lookUpVariable(expr.keyword, expr);
+	}
 }

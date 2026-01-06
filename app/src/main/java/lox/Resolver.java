@@ -14,6 +14,7 @@ import lox.Expr.Grouping;
 import lox.Expr.Literal;
 import lox.Expr.Logical;
 import lox.Expr.Set;
+import lox.Expr.This;
 import lox.Expr.Unary;
 import lox.Expr.Variable;
 import lox.Stmt.Block;
@@ -232,16 +233,32 @@ class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
     FUNCTION, METHOD
   }
 
+  private enum ClassType {
+    NONE,
+    CLASS
+  }
+
+  private ClassType currentClass = ClassType.NONE;
+
   @Override
   public Void visitClassStmt(Class stmt) {
+    ClassType enclosingClass = currentClass;
+    currentClass = ClassType.CLASS;
+    
     declare(stmt.name);
     define(stmt.name);
+
+    beginScope();
+    scopes.peek().put("this", true);
 
     for (Stmt.Function method: stmt.methods) {
       FunctionType declaration = FunctionType.METHOD;
       resolveFunction(method, declaration);
     }
     
+    endScope();
+
+    currentClass = enclosingClass;
     return null;
  }
 
@@ -257,4 +274,15 @@ class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
     resolve(expr.object);
     return null;
   }
+
+  @Override
+  public Void visitThisExpr(This expr) {
+    if (currentClass == ClassType.NONE) {
+      Lox.error(expr.keyword,
+          "Can't use 'this' outside of a class.");
+      return null;
+    }
+    resolveLocal(expr, expr.keyword);
+    return null;
+	}
 }

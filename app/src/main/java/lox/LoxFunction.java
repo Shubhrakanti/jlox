@@ -41,4 +41,10 @@ class LoxFunction implements LoxCallable {
     return "<fn " + declaration.name.lexeme + ">";
   }
 
+  LoxFunction bind(LoxInstance loxInstance) {
+    Environment environment = new Environment(closure);
+    environment.define("this", loxInstance);
+    return new LoxFunction(declaration, environment);
+	}
+
 }
